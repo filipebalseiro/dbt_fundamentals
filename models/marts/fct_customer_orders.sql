@@ -1,24 +1,38 @@
 with 
 
--- Import CTEs
+    -- Import CTEs
 
-customers as (
+    customers as (
 
-    select * from {{ source('jaffle_shop', 'customers') }}
+        select * from {{ source('jaffle_shop', 'customers') }}
 
-),
+    ),
 
-orders as (
+    orders as (
 
-    select * from {{ source('jaffle_shop', 'orders') }}
+        select * from {{ source('jaffle_shop', 'orders') }}
 
-),
+    ),
 
-payments as (
+    payments as (
 
-    select * from {{ source('stripe', 'payment') }}
+        select * from {{ source('stripe', 'payment') }}
 
-),
+    ),
+
+    -- Convert subqueries into CTEs
+    completed_payments as (
+
+        select 
+            orderid as order_id,
+            max(created) as payment_finalized_date, 
+            sum(amount) / 100.0 as total_amount_paid
+
+        from payments
+        where status <> 'fail'
+        group by 1
+            
+    ),
 
 
     paid_orders as (
@@ -34,16 +48,7 @@ payments as (
             c.last_name as customer_last_name
 
         from orders as orders
-        left join (
-            select 
-                orderid as order_id,
-                max(created) as payment_finalized_date, 
-                sum(amount) / 100.0 as total_amount_paid
-
-            from payments
-            where status <> 'fail'
-            group by 1
-        ) p on orders.id = p.order_id
+        left join completed_payments as p on orders.id = p.order_id
 
     left join customers c on orders.user_id = c.id 
     ),
