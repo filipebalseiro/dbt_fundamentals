@@ -10,19 +10,19 @@ with
             c.first_name    as customer_first_name,
             c.last_name as customer_last_name
 
-        from filipe_balseiro_raw.jaffle_shop.orders as orders
+        from {{ source('jaffle_shop', 'orders') }} as orders
         left join (
             select 
                 orderid as order_id,
                 max(created) as payment_finalized_date, 
                 sum(amount) / 100.0 as total_amount_paid
 
-            from filipe_balseiro_raw.stripe.payment
+            from {{ source('stripe', 'payment') }}
             where status <> 'fail'
             group by 1
         ) p on orders.id = p.order_id
 
-    left join filipe_balseiro_raw.jaffle_shop.customers c on orders.user_id = c.id 
+    left join {{ source('jaffle_shop', 'customers') }} c on orders.user_id = c.id 
     ),
 
     customer_orders as (
@@ -32,8 +32,8 @@ with
             , max(order_date) as most_recent_order_date
             , count(orders.id) as number_of_orders
 
-        from filipe_balseiro_raw.jaffle_shop.customers c 
-        left join filipe_balseiro_raw.jaffle_shop.orders as orders
+        from {{ source('jaffle_shop', 'customers') }} c 
+        left join {{ source('jaffle_shop', 'orders') }} as orders
             on orders.user_id = c.id 
         group by 1
     )
