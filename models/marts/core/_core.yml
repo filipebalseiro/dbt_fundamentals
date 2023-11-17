@@ -21,3 +21,13 @@ models:
           - relationships:
               to: ref('stg_orders')
               field: order_id
+  - name: orders_by_customer_9
+    description: How many orders had each customer placed?
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('fct_orders')
+              field: customer_id
