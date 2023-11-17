@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: Customers dimensional model with some added properties from orders table
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null 
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+  - name: fct_orders
+    description: Facts orders table. Each record represents an order
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id

@@ -31,7 +31,6 @@ paid_orders as (
         orders.customer_id,
         orders.order_placed_at,
         orders.order_status,
-
         completed_payments.total_amount_paid,
         completed_payments.payment_finalized_date
     from orders

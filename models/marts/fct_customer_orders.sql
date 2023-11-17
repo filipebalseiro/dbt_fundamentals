@@ -4,7 +4,7 @@ with
 
         select * from {{ ref('stg_customers') }}
 
-    )
+    ),
 
     paid_orders as (
 
@@ -21,8 +21,8 @@ with
             paid_orders.order_status,
             paid_orders.total_amount_paid,
             paid_orders.payment_finalized_date,
-            paid_orders.customer_first_name,
-            paid_orders.customer_last_name,
+            customers.customer_first_name,
+            customers.customer_last_name,
 
             -- sales transaction sequence
             row_number() over (order by paid_orders.order_id) as transaction_seq,

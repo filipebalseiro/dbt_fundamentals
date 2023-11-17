@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: int_orders
+    description: Aggregation with orders and payments to get paid orders and total amount paid by order
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null 
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+  - name: int_orders__pivoted
+    description: Orders pivoted with the amount paid for each payment method
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null 
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+  - name: fct_customer_orders
+    description: Aggregation of paid orders data with customer data by order
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('int_orders')
+              field: order_id

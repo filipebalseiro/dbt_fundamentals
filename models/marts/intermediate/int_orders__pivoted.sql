@@ -13,7 +13,7 @@ with
             {% for payment_method in payment_methods -%}
                 sum(
                     case
-                        when payment_method = '{{ payment_method }}' then amount
+                        when payment_method = '{{ payment_method }}' then payment_amount
                         else 0
                     end
                 ) as {{ payment_method }}_amount
@@ -23,7 +23,7 @@ with
             {% endfor -%}
         
         from payments
-        where status = 'success'
+        where payment_status = 'success'
         group by 1
     )
 
