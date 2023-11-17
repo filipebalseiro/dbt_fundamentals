@@ -1,1 +1,0 @@
-{{ template_example() }}
