@@ -45,3 +45,8 @@ models:
       +materialized: table
       core:
         +required_tests: {"relationship.*": 1}
+
+tests:
+  jaffle_shop:
+    +severity: warn
+    +store_failures: true

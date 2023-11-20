@@ -55,10 +55,7 @@ models:
           - relationships:
               to: ref('stg_customers')
               field: customer_id
-          - unique:
-              config: 
-                store_failures: true
-                schema: test_failures
+          - unique
 
   - name: orders_by_customer_9
     description: How many orders had each customer placed?
