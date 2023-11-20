@@ -1,4 +1,4 @@
-{{ config(enabled = false) }}
+{{ config(severity = 'warn') }}
 
 select
     customer_id, 
