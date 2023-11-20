@@ -56,8 +56,8 @@ models:
               to: ref('stg_customers')
               field: customer_id
           - unique:
-              config:
-                where: "order_placed_at > '2018-03-01'"
+              config: 
+                limit: 10
 
   - name: orders_by_customer_9
     description: How many orders had each customer placed?
