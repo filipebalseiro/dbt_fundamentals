@@ -11,16 +11,51 @@ models:
           - relationships:
               to: ref('stg_customers')
               field: customer_id
+      - name: first_order_date
+        description: NULL when a customer has not yet placed an order.
+      - name: lifetime_value
+        description: Lifetime value of a customer based on orders purchased
+        tests:
+          - assert_dollars_spent_are_greater_than_one:
+              group_by_column: customer_id
+
   - name: fct_orders
     description: Facts orders table. Each record represents an order
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: "payment_amount >= 0"
     columns:
       - name: order_id
+        description: Primary key for orders
         tests:
           - unique
           - not_null
           - relationships:
               to: ref('stg_orders')
               field: order_id
+      - name: payment_amount
+        description: Dollars spent per order
+        tests:
+          - assert_dollars_spent_are_greater_than_one:
+              group_by_column: customer_id
+          - dbt_expectations.expect_column_values_to_be_between: 
+          # this will perform what the dbt_utils.expression-is-true test does!
+              min_value: 0
+              row_condition: "order_id is not null" 
+              strictly: false
+          - dbt_expectations.expect_column_mean_to_be_between: 
+          # this will perform what our singular and generic tests do!
+              min_value: 1
+              group_by: [customer_id] 
+              row_condition: "order_id is not null" # (Optional)
+              strictly: false
+
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+
   - name: orders_by_customer_9
     description: How many orders had each customer placed?
     columns:
