@@ -55,6 +55,11 @@ models:
           - relationships:
               to: ref('stg_customers')
               field: customer_id
+          - unique:
+              config:
+                severity: warn
+                error_if: ">100"
+                warn_if: ">30"
 
   - name: orders_by_customer_9
     description: How many orders had each customer placed?
