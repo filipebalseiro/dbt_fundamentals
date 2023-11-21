@@ -13,6 +13,7 @@ customer_orders as (
     select
         customer_id,
         min(order_placed_at) as first_order_date,
+        -- adding a comment for ci
         max(order_placed_at) as most_recent_order_date,
         count(order_id) as number_of_orders,
         sum(payment_amount) as lifetime_value
