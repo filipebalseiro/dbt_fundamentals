@@ -20,6 +20,7 @@ final as (
     select
         orders.order_id,
         orders.customer_id,
+        -- adding a comment for ci
         orders.order_placed_at,
         coalesce(order_payments.payment_amount, 0) as payment_amount
 
